@@ -7,38 +7,50 @@
 #                                       #
 #########################################
 
-#Class para definir Veículo:
+#Classe para definir veículo:
 class Veiculo:
-    def __init__(self, marca, modelo, ano, valor):
-        self._marca = marca
-        self._modelo = modelo
-        self._ano = ano
-        self._valor = valor
+    def __init__(self, marca, modelo, ano, valor, cilindradas=0, carga=0, portas=0):
+        self.marca = marca
+        self.modelo = modelo
+        self.ano = ano
+        self.valor = valor
+        self.cilindradas = cilindradas
+        self.carga = carga
+        self.portas = portas
 
     def calcular_ipva(self):
         pass
 
-    def __str__(self):
-        return f"{self._marca} {self._modelo} ({self._ano}) - R${self._valor:.2f}"
+    def imprimir(self):
+        return f"{self.marca} {self.modelo} ({self.ano}) | R${self.valor:.2f}"
 
-#Class dos veículos junto da definição de valor do IPVA:
+#Classes dos veículos e definição do IPVA:
 class Carro(Veiculo):
     def calcular_ipva(self):
-        return self._valor * 0.04
+        return self.valor * 0.04
+
+    def imprimir(self):
+        return super().imprimir() + f" | Portas: {self.portas}"
 
 class Moto(Veiculo):
     def calcular_ipva(self):
-        return self._valor * 0.02
+        return self.valor * 0.02
+
+    def imprimir(self):
+        return super().imprimir() + f" | Cilindradas: {self.cilindradas}"
 
 class Caminhao(Veiculo):
     def calcular_ipva(self):
-        return self._valor * 0.01
+        return self.valor * 0.01
+
+    def imprimir(self):
+        return super().imprimir() + f" | Carga: {self.carga}"
 
 class SistemaVeicular:
     def __init__(self):
         self.veiculos = []
 
-#Input das informações do veículo:
+    #Método para cadastrar veículo:
     def cadastrar_veiculo(self):
         tipo = input("Digite o tipo do veículo (Carro/Moto/Caminhão): ").strip().lower()
         marca = input("Digite a marca do veículo: ")
@@ -47,35 +59,40 @@ class SistemaVeicular:
         valor = float(input("Digite o valor do veículo: "))
 
         if tipo == 'carro':
-            veiculo = Carro(marca, modelo, ano, valor)
+            portas = input("Digite o número de portas: ")
+            veiculo = Carro(marca, modelo, ano, valor, portas=portas)
         elif tipo == 'moto':
-            veiculo = Moto(marca, modelo, ano, valor)
-        elif tipo == 'caminhão':
-            veiculo = Caminhao(marca, modelo, ano, valor)
+            cilindradas = input("Digite o número de cilindradas: ")
+            veiculo = Moto(marca, modelo, ano, valor, cilindradas=cilindradas)
+        elif tipo == 'caminhao':
+            carga = input("Digite a capacidade de carga: ")
+            veiculo = Caminhao(marca, modelo, ano, valor, carga=carga)
         else:
             print("Tipo de veículo inválido.")
             return
+        
         self.veiculos.append(veiculo)
         print("Veículo cadastrado com sucesso!")
 
-#Vizualiza os veículos cadastrados:
+    #Método para consultar veículos cadastrados:
     def consultar_veiculo(self):
         if not self.veiculos:
             print("Nenhum veículo cadastrado.")
             return
-        for i, veiculo in enumerate(self.veiculos, start=1):
-            print(f"{i}. {veiculo}")
+        for i in range(len(self.veiculos)):
+            veiculo = self.veiculos[i]
+            print(f"{i + 1}. {veiculo.imprimir()}")
             
-#Calcula o IPVA dos veiculos cadastrados:
+    #Método para calcular o IPVA dos veículos cadastrados:
     def calcular_ipva(self):
         if not self.veiculos:
             print("Nenhum veículo cadastrado.")
             return
-        for i, veiculo in enumerate(self.veiculos, start=1):
+        for veiculo in self.veiculos:
             ipva = veiculo.calcular_ipva()
-            print(f"IPVA do veículo {veiculo}: R${ipva:.2f}")
+            print(f"IPVA DE: R${ipva:.2f} DO VEÍCULO: [{veiculo.imprimir()}]")
 
-#Menu de escolha:
+    #Método para o menu:
     def menu(self):
         while True:
             print("\nEscolha uma opção:")
@@ -96,7 +113,7 @@ class SistemaVeicular:
                 break
             else:
                 print("Escolha inválida.")
-                
+
 #Executando o sistema:
 sistema = SistemaVeicular()
 sistema.menu()
