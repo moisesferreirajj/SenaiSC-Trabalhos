@@ -1,2 +1,3 @@
-# Aqui ficaram as atividades de modelagem de sistemas, requisitos funcionais, não funcionais, estruturas de caso, uso, include, extend etc...
-> Vou alterando por aqui, qualquer coisa do uma olhadinha.
+Aqui ficarão as atividades de modelagem de sistemas, requisitos funcionais.
+Requisitos Não funcionais, estruturas de caso, uso, include, extend etc.
+Vou alterando por aqui, qualquer coisa do uma olhadinha.
