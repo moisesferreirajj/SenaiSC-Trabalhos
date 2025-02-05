@@ -104,3 +104,26 @@ VALUES
 (6, 6),
 (7, 7),
 (8, 8);
+
+# 1. Liste alfabeticamente o nome e o endereço de todos os alunos.
+
+# 2. Liste o nome dos professores que possuem a titulação "Mestre".
+
+# 3. Liste a sigla e a data de início de todas as turmas que começaram no ano de 2023.
+SELECT Sigla_turma, Data_inicio
+FROM turmas
+WHERE YEAR(Data_inicio) = 2023;
+
+# 4. Liste o nome dos alunos matriculados na turma com a sigla " T ELET".
+
+# 5. Liste alfabeticamente o nome das disciplinas que possuem a palavra "Matemática" no nome.
+
+# 6. Liste o nome dos alunos que estão matriculados em turmas cujos professores possuem a titulação "Doutorado".
+
+# 7. Liste o nome e a sigla das turmas que possuem alunos matriculados com endereço contendo a palavra "Joinville".
+
+# 8. Liste o nome dos professores que lecionam em turmas que começaram após o dia 01/01/2024.
+
+# 9. Liste alfabeticamente o nome dos alunos que estão matriculados em mais de uma turma.
+
+# 10. Liste o nome das disciplinas e seus respectivos professores que são lecionadas na turma "T DESI".
