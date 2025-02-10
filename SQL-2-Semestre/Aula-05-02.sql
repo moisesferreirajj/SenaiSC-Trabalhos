@@ -15,8 +15,8 @@ create table aluno(
   primary key (PK_Matricula)
 );
 
-INSERT INTO aluno (Nome_Aluno, Endereco_Aluno, Cpf_Aluno) 
-VALUES 
+insert into aluno (Nome_Aluno, Endereco_Aluno, Cpf_Aluno) 
+values 
 ('Carlos Silva', 'Rua A, 123', 12345678901),
 ('Fernanda Oliveira', 'Av. B, 456', 23456789012),
 ('Lucas Pereira', 'Rua C, 789', 34567890123),
@@ -33,8 +33,8 @@ create table professor(
   primary key (Pk_professor)
 );
 
-INSERT INTO professor (Nome_professor, Titulacao_professor)
-VALUES 
+insert into professor (Nome_professor, Titulacao_professor)
+values 
 ('João Ferreira', 'Graduação'),
 ('Maria Souza', 'Mestre'),
 ('Carlos Rocha', 'Doutorado'),
@@ -51,8 +51,8 @@ create table turmas(
   primary key (Pk_turma)
 );
 
-INSERT INTO turmas (Sigla_turma, Data_inicio)
-VALUES 
+insert into turmas (Sigla_turma, Data_inicio)
+values 
 ('TDESI', '2025-02-10'),
 ('TMEC', '2025-02-12'),
 ('TELET', '2025-03-05'),
@@ -73,8 +73,8 @@ create table disciplina(
   on delete restrict on update cascade
 );
 
-INSERT INTO disciplina (Nome_disciplina, Fk_turma, Fk_professor)
-VALUES 
+insert into disciplina (Nome_disciplina, Fk_turma, Fk_professor)
+values 
 ('Português', 1, 1),
 ('Matemática', 2, 2),
 ('Banco de Dados', 3, 3),
@@ -94,8 +94,8 @@ create table turmas_has_aluno(
   on delete restrict on update cascade
 );
 
-INSERT INTO turmas_has_aluno (Fk_turma, Fk_matricula)
-VALUES 
+insert into turmas_has_aluno (Fk_turma, Fk_matricula)
+values
 (1, 1),
 (2, 2),
 (3, 3),
@@ -106,67 +106,65 @@ VALUES
 (8, 8);
 
 # 1. Liste alfabeticamente o nome e o endereço de todos os alunos.
-SELECT Nome_Aluno, Endereco_Aluno 
-FROM aluno 
-ORDER BY Nome_Aluno;
+select nome_aluno, endereco_aluno from aluno order by nome_aluno;
 
-# 2. Liste o nome dos professores que possuem a titulação "Mestre".
-SELECT Nome_professor 
-FROM professor 
-WHERE Titulacao_professor = 'Mestre';
-  
+# 2. Liste o nome dos professores que possuem a titulação "Mestre"
+select * from professor where titulacao_professor = 'Mestre';
+
 # 3. Liste a sigla e a data de início de todas as turmas que começaram no ano de 2023.
-SELECT Sigla_turma, Data_inicio
-FROM turmas
-WHERE YEAR(Data_inicio) = 2023;
+select sigla_turma, data_inicio from turma
+where data_inicio >= '2023-01-01' and data_inicio < '2024-01-01';
 
-# 4. Liste o nome dos alunos matriculados na turma com a sigla " T ELET".
-SELECT a.Nome_Aluno
-FROM aluno a
-JOIN turmas_has_aluno tha ON a.PK_Matricula = tha.Fk_matricula
-JOIN turmas t ON tha.Fk_turma = t.Pk_turma
-WHERE t.Sigla_turma = 'TELET';
+# 4. Liste o nome dos alunos matriculados na turma com a sigla " T ELET"
+select aluno.nome_aluno, turma.sigla_turma from turma_has_aluno 
+join aluno on turma_has_aluno.fk_matricula = aluno.pk_matricula
+join turma on turma_has_aluno.fk_turma = turma.pk_turma
+where turma.sigla_turma = 'T ELET';
 
-# 5. Liste alfabeticamente o nome das disciplinas que possuem a palavra "Matemática" no nome.
-SELECT Nome_disciplina
-FROM disciplina
-WHERE Nome_disciplina LIKE '%Matemática%'
-ORDER BY Nome_disciplina;
+# 5. Liste alfabeticamente o nome das disciplinas que possuem a palavra "Matemática" no nome - trocarei para 'Desenvolvimento'
+select nome_disciplina from disciplina
+where nome_disciplina like "Desenvolvimento"
+order by nome_disciplina;
 
 # 6. Liste o nome dos alunos que estão matriculados em turmas cujos professores possuem a titulação "Doutorado".
-SELECT DISTINCT a.Nome_Aluno
-FROM aluno a
-JOIN turmas_has_aluno tha ON a.PK_Matricula = tha.Fk_matricula
-JOIN turmas t ON tha.Fk_turma = t.Pk_turma
-JOIN disciplina d ON t.Pk_turma = d.Fk_turma
-JOIN professor p ON d.Fk_professor = p.Pk_professor
-WHERE p.Titulacao_professor = 'Doutorado';
+select nome_aluno, sigla_turma, nome_professor, titulacao_professor
+from aluno, turma, professor, disciplina, turma_has_aluno
+where aluno.pk_matricula = turma_has_aluno.fk_matricula
+and turma_has_aluno.fk_turma = turma.pk_turma
+and turma.pk_turma = disciplina.fk_turma
+and disciplina.fk_professor = professor.pk_professor
+and professor.titulacao_professor = 'Doutorado'
+order by nome_aluno;
 
-# 7. Liste o nome e a sigla das turmas que possuem alunos matriculados com endereço contendo a palavra "Joinville".
-SELECT DISTINCT t.Sigla_turma, a.Nome_Aluno
-FROM aluno a
-JOIN turmas_has_aluno tha ON a.PK_Matricula = tha.Fk_matricula
-JOIN turmas t ON tha.Fk_turma = t.Pk_turma
-WHERE a.Endereco_Aluno LIKE '%Joinville%';
+# 7. Liste o nome e a sigla das turmas que possuem alunos matriculados com endereço contendo a palavra "Joinville". # SUBSTITUIREI POR AVENIDA
+select turma.pk_turma, turma.sigla_turma, aluno.nome_aluno
+from turma
+join turma_has_aluno on turma.pk_turma = turma_has_aluno.fk_turma
+join aluno on aluno.pk_matricula = turma_has_aluno.fk_matricula
+where aluno.endereco_aluno like '%Avenida%' 
+and aluno.nome_aluno like 'M%'
+order by aluno.nome_aluno;
 
 # 8. Liste o nome dos professores que lecionam em turmas que começaram após o dia 01/01/2024.
-SELECT DISTINCT p.Nome_professor
-FROM professor p
-JOIN disciplina d ON p.Pk_professor = d.Fk_professor
-JOIN turmas t ON d.Fk_turma = t.Pk_turma
-WHERE t.Data_inicio > '2024-01-01';
+select turma.pk_turma, turma.sigla_turma, professor.nome_professor, turma.data_inicio
+from professor
+join disciplina on disciplina.fk_professor = professor.pk_professor
+join turma on turma.pk_turma = disciplina.fk_turma
+where turma.data_inicio >= '2024-01-01'
+order by professor.nome_professor;
 
 # 9. Liste alfabeticamente o nome dos alunos que estão matriculados em mais de uma turma.
-SELECT a.Nome_Aluno
-FROM aluno a
-JOIN turmas_has_aluno tha ON a.PK_Matricula = tha.Fk_matricula
-GROUP BY a.Nome_Aluno
-HAVING COUNT(tha.Fk_turma) > 1
-ORDER BY a.Nome_Aluno;
+select aluno.nome_aluno
+from aluno
+join turma_has_aluno on aluno.pk_matricula = turma_has_aluno.fk_matricula
+group by aluno.pk_matricula
+having count(turma_has_aluno.fk_turma) > 1
+order by aluno.nome_aluno;
 
 # 10. Liste o nome das disciplinas e seus respectivos professores que são lecionadas na turma "T DESI".
-SELECT d.Nome_disciplina, p.Nome_professor
-FROM disciplina d
-JOIN professor p ON d.Fk_professor = p.Pk_professor
-JOIN turmas t ON d.Fk_turma = t.Pk_turma
-WHERE t.Sigla_turma = 'TDESI';
+select distinct turma.sigla_turma, disciplina.nome_disciplina, professor.nome_professor
+from professor
+join disciplina on disciplina.fk_professor = professor.pk_professor
+join turma on turma.pk_turma = disciplina.fk_turma
+where turma.sigla_turma = 'T DESI'
+order by professor.nome_professor;
