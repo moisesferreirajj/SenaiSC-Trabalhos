@@ -1,7 +1,7 @@
 #############################################
-# DBZINHA BASICA DO MOISES J. FERREIRA		#
-# 05/02/2025								#
-# TDESN V3									#
+# DBZINHA BASICA DO MOISES J. FERREIRA
+# 05/02/2025
+# TDESN V3
 #############################################
 
 create database Escola;
@@ -106,24 +106,67 @@ VALUES
 (8, 8);
 
 # 1. Liste alfabeticamente o nome e o endereço de todos os alunos.
+SELECT Nome_Aluno, Endereco_Aluno 
+FROM aluno 
+ORDER BY Nome_Aluno;
 
 # 2. Liste o nome dos professores que possuem a titulação "Mestre".
-
+SELECT Nome_professor 
+FROM professor 
+WHERE Titulacao_professor = 'Mestre';
+  
 # 3. Liste a sigla e a data de início de todas as turmas que começaram no ano de 2023.
 SELECT Sigla_turma, Data_inicio
 FROM turmas
 WHERE YEAR(Data_inicio) = 2023;
 
 # 4. Liste o nome dos alunos matriculados na turma com a sigla " T ELET".
+SELECT a.Nome_Aluno
+FROM aluno a
+JOIN turmas_has_aluno tha ON a.PK_Matricula = tha.Fk_matricula
+JOIN turmas t ON tha.Fk_turma = t.Pk_turma
+WHERE t.Sigla_turma = 'TELET';
 
 # 5. Liste alfabeticamente o nome das disciplinas que possuem a palavra "Matemática" no nome.
+SELECT Nome_disciplina
+FROM disciplina
+WHERE Nome_disciplina LIKE '%Matemática%'
+ORDER BY Nome_disciplina;
 
 # 6. Liste o nome dos alunos que estão matriculados em turmas cujos professores possuem a titulação "Doutorado".
+SELECT DISTINCT a.Nome_Aluno
+FROM aluno a
+JOIN turmas_has_aluno tha ON a.PK_Matricula = tha.Fk_matricula
+JOIN turmas t ON tha.Fk_turma = t.Pk_turma
+JOIN disciplina d ON t.Pk_turma = d.Fk_turma
+JOIN professor p ON d.Fk_professor = p.Pk_professor
+WHERE p.Titulacao_professor = 'Doutorado';
 
 # 7. Liste o nome e a sigla das turmas que possuem alunos matriculados com endereço contendo a palavra "Joinville".
+SELECT DISTINCT t.Sigla_turma, a.Nome_Aluno
+FROM aluno a
+JOIN turmas_has_aluno tha ON a.PK_Matricula = tha.Fk_matricula
+JOIN turmas t ON tha.Fk_turma = t.Pk_turma
+WHERE a.Endereco_Aluno LIKE '%Joinville%';
 
 # 8. Liste o nome dos professores que lecionam em turmas que começaram após o dia 01/01/2024.
+SELECT DISTINCT p.Nome_professor
+FROM professor p
+JOIN disciplina d ON p.Pk_professor = d.Fk_professor
+JOIN turmas t ON d.Fk_turma = t.Pk_turma
+WHERE t.Data_inicio > '2024-01-01';
 
 # 9. Liste alfabeticamente o nome dos alunos que estão matriculados em mais de uma turma.
+SELECT a.Nome_Aluno
+FROM aluno a
+JOIN turmas_has_aluno tha ON a.PK_Matricula = tha.Fk_matricula
+GROUP BY a.Nome_Aluno
+HAVING COUNT(tha.Fk_turma) > 1
+ORDER BY a.Nome_Aluno;
 
 # 10. Liste o nome das disciplinas e seus respectivos professores que são lecionadas na turma "T DESI".
+SELECT d.Nome_disciplina, p.Nome_professor
+FROM disciplina d
+JOIN professor p ON d.Fk_professor = p.Pk_professor
+JOIN turmas t ON d.Fk_turma = t.Pk_turma
+WHERE t.Sigla_turma = 'TDESI';
